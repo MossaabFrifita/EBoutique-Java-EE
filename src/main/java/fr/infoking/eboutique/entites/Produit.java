@@ -28,24 +28,21 @@ public class Produit implements Serializable {
 	private String description;
 	private double prix;
 	private int quantite;
-	
+	private boolean selected;
 	private String photo;
 	@ManyToOne
 	@JoinColumn(name="idCategorie")
 	private Categorie categorie;
 	
 	
-	
-	
-	public Produit(String designation, String description, double prix, int quantite, String photo,
-			Categorie categorie) {
+	public Produit(String designation, String description, double prix, int quantite, boolean selected, String photo) {
 		super();
 		this.designation = designation;
 		this.description = description;
 		this.prix = prix;
 		this.quantite = quantite;
+		this.selected = selected;
 		this.photo = photo;
-		this.categorie = categorie;
 	}
 	public Produit() {
 		super();
@@ -92,6 +89,12 @@ public class Produit implements Serializable {
 	}
 	public void setCategorie(Categorie categorie) {
 		this.categorie = categorie;
+	}
+	public boolean isSelected() {
+		return selected;
+	}
+	public void setSelected(boolean selected) {
+		this.selected = selected;
 	}
 	
 	

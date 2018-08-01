@@ -35,5 +35,10 @@
 	 <tx:annotation-driven transaction-manager="transactionManager" />
 	 <context:annotation-config></context:annotation-config>
 	 
+	 <bean id="dao" class="fr.infoking.eboutique.dao.BoutiqueDaoImpl"></bean>
+	 
+	 <bean id="metier" class="fr.infoking.eboutique.metier.BoutiqueMetierImpl">
+	  	<property name="dao" ref="dao" />
+	 </bean>
 
 </beans>
