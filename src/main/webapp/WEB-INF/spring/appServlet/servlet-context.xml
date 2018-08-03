@@ -23,6 +23,9 @@
 	
 	<context:component-scan base-package="fr.infoking.eboutique" />
 	
-	
+	<!-- Configuration Upload- -->
+	<beans:bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
+	<beans:property name="maxUploadSize" value="100000"></beans:property>
+	</beans:bean>	
 	
 </beans:beans>
