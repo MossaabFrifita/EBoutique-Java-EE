@@ -59,6 +59,7 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 		{
 			
 			BufferedImage bi = ImageIO.read(multipartFile.getInputStream());  //  Image Validation
+		
 			c.setPhoto(multipartFile.getBytes());
 			c.setNomPhoto(multipartFile.getOriginalFilename());
 		}
@@ -74,6 +75,7 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 		model.addAttribute("categories",metier.listCategories());
 		return "categorie";
 	}
+	
 	
 	@RequestMapping(value="CatPhoto", produces =MediaType.IMAGE_JPEG_VALUE)
 	@ResponseBody
@@ -92,6 +94,24 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 		mv.addObject("exception",ex.getMessage());
 		mv.setViewName("categorie");
 		return mv;
+	}
+	
+	@RequestMapping(value="deleteCat" , method = RequestMethod.GET)
+	public String deleteCat(@RequestParam Long idCat, Model model)
+	{
+		metier.supprimerCategorie(idCat);
+		model.addAttribute("categorie",new Categorie());
+		model.addAttribute("categories",metier.listCategories());
+		return "categorie";
+	}
+	
+	@RequestMapping(value="updateCat" , method = RequestMethod.GET)
+	public String updateCat(@RequestParam Long idCat, Model model)
+	{
+		
+		model.addAttribute("categorie",metier.getCategorie(idCat));
+		model.addAttribute("categories",metier.listCategories());
+		return "categorie";
 	}
 
 }

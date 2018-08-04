@@ -50,6 +50,8 @@
 				 <td>${categorie.nomCategorie}</td>
 				 <td>${categorie.description}</td>
 				 <td><img src="CatPhoto?idCat=${categorie.idCategorie}"/></td>
+				 <td><a href="deleteCat?idCat=${categorie.idCategorie}">Supprimer</a></td>
+				 <td><a href="updateCat?idCat=${categorie.idCategorie}">Modifier</a></td>
 				</tr>
 		</c:forEach>
 	</table>
