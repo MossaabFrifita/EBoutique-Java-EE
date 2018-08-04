@@ -6,6 +6,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+<div id="exception" class="errors">${exception}</div>
 <div id="form" class="cadre">
 		<f:form modelAttribute="categorie"  action="saveCat" method="post" enctype="multipart/form-data">
 				

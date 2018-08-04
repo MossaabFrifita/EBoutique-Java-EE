@@ -5,6 +5,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.io.IOUtils;
@@ -18,13 +20,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 import fr.infoking.eboutique.entites.Categorie;
 import fr.infoking.eboutique.metier.IAdminCategoriesMetier;
 
 @Controller
 @RequestMapping(value="/adminCat")
-public class AdminCategorieController {
+public class AdminCategorieController implements HandlerExceptionResolver {
 	
 	
 	@Autowired
@@ -77,6 +81,17 @@ public class AdminCategorieController {
 	{
 		Categorie c = metier.getCategorie(idCat);
 		return IOUtils.toByteArray(new ByteArrayInputStream(c.getPhoto()));
+	}
+
+	@Override
+	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
+	
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("categorie",new Categorie());
+		mv.addObject("exception",ex.getMessage());
+		mv.setViewName("categorie");
+		return mv;
 	}
 
 }
