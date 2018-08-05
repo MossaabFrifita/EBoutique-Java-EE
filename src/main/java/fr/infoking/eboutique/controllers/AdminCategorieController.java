@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,7 +30,6 @@ import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
 @RequestMapping(value="/adminCat")
-@SessionAttributes("editedCat")
 public class AdminCategorieController implements HandlerExceptionResolver {
 	
 	
@@ -67,18 +65,19 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 		if(! multipartFile.isEmpty()  ){
 			
 			BufferedImage bi = ImageIO.read(multipartFile.getInputStream());  //  Image Validation
-			bi = resize(bi, 100, 150);
+			bi = resize(bi, 150, 150);
 			c.setPhoto(toByteArray(bi));
 			c.setNomPhoto(multipartFile.getOriginalFilename());
 		}
-		else if(model.asMap().get("editedCat") != null){
-			Categorie cat = (Categorie) model.asMap().get("editedCat");
-			c.setPhoto(cat.getPhoto());
-			c.setNomPhoto(cat.getNomPhoto());
-		}
-		
+
 		
 		if(c.getIdCategorie() != null){
+			Categorie cat = metier.getCategorie(c.getIdCategorie());
+			if(multipartFile.isEmpty()){
+				c.setPhoto(cat.getPhoto());
+				c.setNomPhoto(cat.getNomPhoto());	
+			}
+
 			metier.modifierCategorie(c);
 		}
 		else
@@ -124,7 +123,6 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 	public String updateCat(@RequestParam Long idCat, Model model)
 	{
 		Categorie c = metier.getCategorie(idCat);
-		model.addAttribute("editedCat", c);
 		model.addAttribute("categorie", c);
 		model.addAttribute("categories",metier.listCategories());
 		return "categorie";
