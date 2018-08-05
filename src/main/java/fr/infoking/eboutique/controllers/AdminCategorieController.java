@@ -2,6 +2,7 @@ package fr.infoking.eboutique.controllers;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -19,20 +20,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import fr.infoking.eboutique.entites.Categorie;
 import fr.infoking.eboutique.metier.IAdminCategoriesMetier;
+import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
 @RequestMapping(value="/adminCat")
+@SessionAttributes("editedCat")
 public class AdminCategorieController implements HandlerExceptionResolver {
 	
 	
 	@Autowired
 	private IAdminCategoriesMetier metier;
+	
+	public  BufferedImage resize(BufferedImage img, int newW, int newH) throws IOException {
+		  return Thumbnails.of(img).forceSize(newW, newH).asBufferedImage();
+		}
+	
+	public byte[] toByteArray(BufferedImage image) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(image, "jpg", baos);          
+	    return baos.toByteArray();
+	}
 	
 	@RequestMapping(value="/index")
 	public String home(Model model)
@@ -45,27 +59,28 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 	@RequestMapping(value="saveCat" , method = RequestMethod.POST)
 	public String saveCat(@Valid Categorie c ,BindingResult bindingResult, Model model, @RequestParam("file") MultipartFile multipartFile) throws IOException
 	{
-		
-		
-		if(bindingResult.hasErrors())
-		{
-			
+		if(bindingResult.hasErrors()){		
 			model.addAttribute("categories",metier.listCategories());
 			return "categorie";
 		}
 		
-		
-		if(! multipartFile.isEmpty() )
-		{
+		if(! multipartFile.isEmpty()  ){
 			
 			BufferedImage bi = ImageIO.read(multipartFile.getInputStream());  //  Image Validation
-		
-			c.setPhoto(multipartFile.getBytes());
+			bi = resize(bi, 100, 150);
+			c.setPhoto(toByteArray(bi));
 			c.setNomPhoto(multipartFile.getOriginalFilename());
 		}
+		else if(model.asMap().get("editedCat") != null){
+			Categorie cat = (Categorie) model.asMap().get("editedCat");
+			c.setPhoto(cat.getPhoto());
+			c.setNomPhoto(cat.getNomPhoto());
+		}
 		
-		if(c.getIdCategorie() != null)	
+		
+		if(c.getIdCategorie() != null){
 			metier.modifierCategorie(c);
+		}
 		else
 		{
 			metier.ajouterCategorie(c);
@@ -108,8 +123,9 @@ public class AdminCategorieController implements HandlerExceptionResolver {
 	@RequestMapping(value="updateCat" , method = RequestMethod.GET)
 	public String updateCat(@RequestParam Long idCat, Model model)
 	{
-		
-		model.addAttribute("categorie",metier.getCategorie(idCat));
+		Categorie c = metier.getCategorie(idCat);
+		model.addAttribute("editedCat", c);
+		model.addAttribute("categorie", c);
 		model.addAttribute("categories",metier.listCategories());
 		return "categorie";
 	}

@@ -28,7 +28,9 @@
 				</tr>
 				<tr>
 					<td>PHOTO CAT</td>
-					<td></td>		
+					<c:if test="${categorie.idCategorie!=null}">
+				    <td><img src="CatPhoto?idCat=${categorie.idCategorie}"/></td>
+					</c:if>			
 					<td><input type="file" name="file" /></td>
 				</tr>
 				<tr>
