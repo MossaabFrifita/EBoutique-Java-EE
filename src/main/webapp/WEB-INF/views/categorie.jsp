@@ -3,7 +3,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>E-commerce</title>
+<link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/style.css"></link>
 </head>
 <body>
 <div id="exception" class="errors">${exception}</div>
