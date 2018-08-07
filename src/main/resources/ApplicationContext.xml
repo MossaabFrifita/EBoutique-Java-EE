@@ -2,23 +2,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:s="http://www.springframework.org/schema/security"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
 
  <!-- JPA Config  -->
+ <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+    </bean> 
+      <context:component-scan base-package="fr.infoking.eboutique" />
 	 
-	 <bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	 	<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
 	 	<property name="url" value="jdbc:mysql://localhost:3306/eboutique"></property>
 	 	<property name="username" value="root"></property>
-	 	<property name="password" value=""></property>
+	 	<property name="password" value="rootroot"></property>
 	 </bean>
 	 
 	 <bean id="persistanceUnitManager" class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
-		 <property name="defaultDataSource" ref="datasource"></property>
-		 <property name="persistenceXmlLocation" value="classpath*:META-INF/persistance.xml">
+		 <property name="defaultDataSource" ref="dataSource"></property>
+		 <property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml">
 	     </property>
 	 </bean>
 	 
@@ -34,6 +42,35 @@
 	 
 	 <tx:annotation-driven transaction-manager="transactionManager" />
 	 <context:annotation-config></context:annotation-config>
+	
+	 <bean id="dao" class="fr.infoking.eboutique.dao.BoutiqueDaoImpl"></bean>
 	 
+	 <bean id="metier" class="fr.infoking.eboutique.metier.BoutiqueMetierImpl">
+	  	<property name="dao" ref="dao" />
+	 </bean>
 
+
+    	<s:http auto-config="true" use-expressions="true">
+		<s:intercept-url pattern="/adminCat/**" access="hasRole('ROLE_ADMIN_CAT')" />
+		<s:intercept-url pattern="/adminProd/**" access="hasRole('ROLE_ADMIN_PROD')" />
+		<s:form-login    login-page="/login" default-target-url="/adminCat/index"  authentication-failure-url="/login"
+		 login-processing-url="/j_spring_security_check" username-parameter="username"  password-parameter="password"/>
+		<s:logout logout-success-url="/logout"/>
+		<s:csrf disabled="true"/>
+	    </s:http>
+
+	<s:authentication-manager>
+	  <s:authentication-provider>
+	  	<s:password-encoder hash="md5"></s:password-encoder>
+	  	<s:jdbc-user-service data-source-ref="dataSource"
+	  	users-by-username-query="select nomUser, password, activated from user where nomUser=?" authorities-by-username-query="select u.nomUser, r.nomRole from user u, role r where u.user_id = r.user_id and u.nomUser=?"/>
+	  	
+	    <!--
+	    <s:user-service>
+		<s:user name="mkyong" password="123456" authorities="ROLE_USER" />
+	    </s:user-service>
+	    -->
+	  </s:authentication-provider>
+	</s:authentication-manager>
+    
 </beans>

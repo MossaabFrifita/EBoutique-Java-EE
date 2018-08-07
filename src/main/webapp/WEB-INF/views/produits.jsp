@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="f" %>
 <html>
 <head>
+
 <title>E-commerce</title>
 <link type="text/css" rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/styleProd.css"></link>
 
