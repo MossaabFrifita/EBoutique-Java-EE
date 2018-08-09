@@ -8,7 +8,7 @@
 
 </head>
 <body>
-
+<a href='<c:url value="j_spring_security_logout" />'>Logout</a>
 	<div id="form" class="cadre">
 		<f:form action="saveProd" modelAttribute="produit" method="POST"   enctype="multipart/form-data">
 			<table>

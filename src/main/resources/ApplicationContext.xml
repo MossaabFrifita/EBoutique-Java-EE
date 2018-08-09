@@ -53,9 +53,9 @@
     	<s:http auto-config="true" use-expressions="true">
 		<s:intercept-url pattern="/adminCat/**" access="hasRole('ROLE_ADMIN_CAT')" />
 		<s:intercept-url pattern="/adminProd/**" access="hasRole('ROLE_ADMIN_PROD')" />
-		<s:form-login    login-page="/login" default-target-url="/adminCat/index"  authentication-failure-url="/login"
+		<s:form-login    login-page="/login" default-target-url="/adminProd/index"  authentication-failure-url="/login"
 		 login-processing-url="/j_spring_security_check" username-parameter="username"  password-parameter="password"/>
-		<s:logout logout-success-url="/logout"/>
+		<s:logout logout-success-url="/login" />
 		<s:csrf disabled="true"/>
 	    </s:http>
 
