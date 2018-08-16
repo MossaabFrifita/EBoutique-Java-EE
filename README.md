@@ -9,7 +9,7 @@ Une partie front office qui représente la boutique virtuelle qui permet de :
 •	Gestion de panier(Ajout de produit avec quantité, le supprimer)
 •	Enregistrer le client et la commande de son panier. 
 
-Environnement technique : JPA, Spring IOC, Spring Security, JUnit, Maven, Servlet, JSP, JSTL, HTML, CSS, Bootsrap.
+Environnement technique : JPA, Spring IOC, Spring Security,Spring MVC, JUnit, Maven, JSP, JSTL, HTML, CSS.
 
 Environnement de développement : Eclipse Mars, Tomcat 8.
 
